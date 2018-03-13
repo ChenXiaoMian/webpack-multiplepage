@@ -108,6 +108,7 @@ index.html 内容如下：
 ## webpack配置
 
 webpack配置`base.js`如下：
+
 ```javascript
 const path = require('path')                                                // 引入node模块，获取路径
 const cwd = process.cwd()                                                   // 当前Node.js进程执行时的工作目录
@@ -231,6 +232,57 @@ module.exports = {
     },
     plugins: plugins
 }
+```
+
+webpack开发配置`dev.js`如下：
+
+```javascript
+const webpack = require('webpack')                                    // webpack
+const merge = require('webpack-merge')                                // 合并插件
+const config = require('./base.js')                                   // 基础配置
+
+module.exports = merge(config, {
+    devtool: 'inline-source-map',
+    devServer: {                                                      // 热更新
+        contentBase: './src',                                         // 基于哪个目录
+        host: 'localhost',
+        port: 9090,
+        inline: true,
+        hot: true                                                     // 热启动
+    },
+    plugins: [
+        new webpack.NamedModulesPlugin(),                             // 当开启HMR的时候使用该插件会显示模块的相对路径
+        new webpack.HotModuleReplacementPlugin()                      // 模块热替换插件
+    ]
+});
+```
+
+webpack开发配置`pro.js`如下：
+
+```javascript
+const path = require('path')
+const cwd = process.cwd()
+const merge = require('webpack-merge')
+const config = require('./base.js')
+const CopyWebpackPlugin = require('copy-webpack-plugin')               // 拷贝资源插件
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')              // 压缩js插件
+const CleanWebpackPlugin = require('clean-webpack-plugin')             // 清理文件插件
+
+module.exports = merge(config, {
+    plugins: [
+        new CleanWebpackPlugin(['dist','build','dist/img'],{
+            root: cwd,
+            verbose: true
+        }),
+        new UglifyJSPlugin(),
+        new CopyWebpackPlugin([                                         // 复制图片文件夹
+            {
+                from: path.join(cwd, 'src/img'),
+                to: path.join(cwd, 'dist/img')
+            }
+        ])
+    ]
+});
 ```
 
 ### 根据模式匹配获取文件列表
@@ -370,4 +422,4 @@ $ npm i -D script-loader exports-loader
 
 配置的时候，参照了很多文章，自身水平有限，如有冒犯，请通知我！
 
-谢谢您的品读blush，此处抛砖引玉，希望大家共同探讨学习。
+谢谢您的品读:blush:，此处抛砖引玉，希望大家共同探讨学习。

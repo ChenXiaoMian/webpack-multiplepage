@@ -38,6 +38,7 @@ module.exports = {
         alias: {
             '@': path.join(cwd, 'src'),
             'css': path.join(cwd, 'src/css'),
+            'scss': path.join(cwd, 'src/scss'),
             'js': path.join(cwd, 'src/js')
         }
     },
